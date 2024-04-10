@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { Camera, CroppArea, Modal } from "..";
 
+const buttonStyles = "absolute bottom-5 left-1/2 transform -translate-x-1/2";
+
 const videoConstraints = {
   width: 800,
   height: 450,
@@ -26,34 +28,52 @@ export const CameraCapture = () => {
 
   return (
     <>
-      <>
+      <div className="flex items-center justify-center">
         {devices.map((_: any, index: number) => (
           <div key={index}>
-            <Camera
-              height={450}
-              screenshotFormat="image/jpeg"
-              width={800}
-              videoConstraints={videoConstraints}
+            <div
+              className={`relative mb-5 w-fit w-[${videoConstraints.width}px] h-[${videoConstraints.height}px] bg-slate-200`}
             >
-              {({ getScreenshot }) => (
-                <button onClick={() => setScreenshot(getScreenshot())}>
-                  Capture photo
-                </button>
+              {!screenshot ? (
+                <Camera
+                  height={videoConstraints.height}
+                  screenshotFormat="image/jpeg"
+                  width={videoConstraints.width}
+                  videoConstraints={videoConstraints}
+                  hidden={!devices.length}
+                >
+                  {({ getScreenshot }) => (
+                    <button
+                      className={buttonStyles}
+                      onClick={() => setScreenshot(getScreenshot())}
+                    >
+                      Capture
+                    </button>
+                  )}
+                </Camera>
+              ) : (
+                <div className="border-yellow-400 border-4">
+                  <img src={screenshot} />
+                  <div className={buttonStyles}>
+                    <button
+                      className="mr-2"
+                      onClick={() => setScreenshot(undefined)}
+                    >
+                      Retake
+                    </button>
+                    <button onClick={() => setIsOpen(true)}>Crop</button>
+                  </div>
+                </div>
               )}
-            </Camera>
-            <div>
-              <img src={screenshot} onClick={() => setIsOpen(true)} />
             </div>
           </div>
         ))}
-      </>
+      </div>
       {screenshot && (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
           <CroppArea
             imageUrl={screenshot}
-            onCroppComplete={(croppedArea: any, croppedAreaPixels: any) => {
-              console.log(croppedArea, croppedAreaPixels);
-            }}
+            onCroppComplete={(croppedArea: any, croppedAreaPixels: any) => {}}
           />
         </Modal>
       )}

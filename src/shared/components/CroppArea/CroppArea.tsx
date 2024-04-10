@@ -15,11 +15,12 @@ export const CroppArea: FC<CroppAreaProps> = ({
 
   return (
     <Cropper
-      classes={{ containerClassName: "w-[800px] h-[450px]" }}
+      classes={{ containerClassName: "" }}
       image={imageUrl}
       crop={crop}
       zoom={zoom}
       aspect={16 / 9}
+      maxZoom={10}
       onCropChange={setCrop}
       onCropComplete={onCroppComplete}
       onZoomChange={setZoom}
