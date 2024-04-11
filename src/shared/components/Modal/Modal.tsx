@@ -4,10 +4,16 @@ import { FC, ReactNode } from "react";
 export type ModalProps = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
+  onSubmit: () => void;
   children?: ReactNode;
 };
 
-export const Modal: FC<ModalProps> = ({ isOpen, setIsOpen, children }) => {
+export const Modal: FC<ModalProps> = ({
+  isOpen,
+  setIsOpen,
+  onSubmit,
+  children,
+}) => {
   return (
     <Dialog
       open={isOpen}
@@ -18,12 +24,10 @@ export const Modal: FC<ModalProps> = ({ isOpen, setIsOpen, children }) => {
         <Dialog.Panel className="relative flex items-center justify-center w-full h-full border-gray-500">
           <Dialog.Title>Image crop demo</Dialog.Title>
           {children}
-          <button
-            className="absolute bottom-10"
-            onClick={() => setIsOpen(false)}
-          >
-            Cancel
-          </button>
+          <div className="absolute bottom-10">
+            <button onClick={onSubmit}>Crop</button>
+            <button onClick={() => setIsOpen(false)}>Cancel</button>
+          </div>
         </Dialog.Panel>
       </div>
     </Dialog>
