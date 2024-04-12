@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { Camera, CroppArea, Modal } from "..";
 import { getCroppedImg } from "../../../utils";
+import { useImageContext } from "../../../context";
+import { routes } from "../../../router/routes";
+import { Link } from "react-router-dom";
 
 const buttonStyles = "absolute bottom-5 left-1/2 transform -translate-x-1/2";
 
@@ -15,7 +18,11 @@ export const CameraCapture = () => {
   const [devices, setDevices] = useState<any>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(undefined);
-  const [croppedImage, setCroppedImage] = useState(undefined);
+  const [croppedImage, setCroppedImage] = useState<string | undefined>(
+    undefined
+  );
+
+  const { imageData, setImageData } = useImageContext();
 
   const handleDevices = useCallback(
     (mediaDevices: any) =>
@@ -35,19 +42,20 @@ export const CameraCapture = () => {
   };
 
   const handleImageCrop = async () => {
-    console.log({ screenshot, croppedAreaPixels });
     if (!screenshot || !croppedAreaPixels) {
       return;
     }
 
     const croppedImage = await getCroppedImg(screenshot, croppedAreaPixels);
 
-    setCroppedImage(croppedImage as any);
+    setCroppedImage(croppedImage);
+    setImageData({ ...imageData, croppedImgSrc: croppedImage });
     setIsOpen(false);
   };
 
   return (
     <>
+      <Link to={routes.questions()}>Analyze</Link>
       <div className="flex items-center justify-center flex-col">
         {devices.map((_: any, index: number) => (
           <div key={index}>
@@ -65,7 +73,12 @@ export const CameraCapture = () => {
                   {({ getScreenshot }) => (
                     <button
                       className={buttonStyles}
-                      onClick={() => setScreenshot(getScreenshot())}
+                      onClick={() => {
+                        const screenshot = getScreenshot();
+
+                        setScreenshot(screenshot);
+                        setImageData({ ...imageData, imageSrc: screenshot });
+                      }}
                     >
                       Capture
                     </button>
@@ -88,7 +101,10 @@ export const CameraCapture = () => {
             </div>
           </div>
         ))}
-        <img src={croppedImage} className="w-[800px]" />
+        <img
+          src={croppedImage || imageData.croppedImgSrc}
+          className="w-[800px]"
+        />
       </div>
       {screenshot && (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleImageCrop}>

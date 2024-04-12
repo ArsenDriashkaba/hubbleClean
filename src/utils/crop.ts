@@ -8,13 +8,16 @@ export const createImage = async (url: any): Promise<HTMLImageElement> =>
     image.src = url;
   });
 
-export const getCroppedImg = async (imageSrc: any, pixelCrop: any) => {
+export const getCroppedImg = async (
+  imageSrc: any,
+  pixelCrop: any
+): Promise<string | undefined> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    return null;
+    return;
   }
 
   const bBoxWidth = 800;

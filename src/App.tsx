@@ -1,6 +1,11 @@
 import "./App.css";
-import { CameraCapture } from "./shared/components";
+import { ImageContextProvider } from "./context";
+import { Router } from "./router/Router";
 
 export default function App() {
-  return <CameraCapture />;
+  return (
+    <ImageContextProvider>
+      <Router />
+    </ImageContextProvider>
+  );
 }
