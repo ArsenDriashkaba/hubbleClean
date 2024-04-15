@@ -1,32 +1,43 @@
-import { useState, useCallback, useEffect, FC } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  FC,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Camera, CroppArea, Modal } from "..";
 import { getCroppedImg } from "../../../utils";
 import { ImageContextType, ImageState } from "../../../context";
 
 const buttonStyles = "absolute bottom-5 left-1/2 transform -translate-x-1/2";
 
-const videoConstraints = {
+export const videoConstraints = {
   width: 800,
   height: 450,
   facingMode: "user",
 };
 
 export type CameraCaptureProps = {
+  screenshot?: string;
+  setScreenshot: Dispatch<SetStateAction<string | undefined>>;
   imageData: ImageState;
   setImageData: ImageContextType["setImageData"];
+  setCroppedImage: Dispatch<SetStateAction<string | undefined>>;
+  className?: string;
 };
 
 export const CameraCapture: FC<CameraCaptureProps> = ({
   imageData,
   setImageData,
+  setCroppedImage,
+  screenshot,
+  setScreenshot,
+  className,
 }) => {
-  const [screenshot, setScreenshot] = useState<string>();
   const [devices, setDevices] = useState<any>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(undefined);
-  const [croppedImage, setCroppedImage] = useState<string | undefined>(
-    undefined
-  );
 
   const handleDevices = useCallback(
     (mediaDevices: any) =>
@@ -40,8 +51,7 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
     navigator.mediaDevices.enumerateDevices().then(handleDevices);
   }, [handleDevices]);
 
-  const handleOnCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
-    console.log({ croppedArea, croppedAreaPixels });
+  const handleOnCropComplete = (_: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
@@ -62,11 +72,11 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-center flex-col">
+      <div className={className}>
         {devices.map((_: any, index: number) => (
           <div key={index}>
             <div
-              className={`relative mb-5 w-fit w-[${videoConstraints.width}px] h-[${videoConstraints.height}px] bg-slate-200`}
+              className={`relative w-[${videoConstraints.width}px] h-[${videoConstraints.height}px] bg-slate-200`}
             >
               {!screenshot ? (
                 <Camera
@@ -110,10 +120,6 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
             </div>
           </div>
         ))}
-        <img
-          src={croppedImage || imageData.croppedImgSrc}
-          className="w-[800px]"
-        />
       </div>
       {screenshot && (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleImageCrop}>
