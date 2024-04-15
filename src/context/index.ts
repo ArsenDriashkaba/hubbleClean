@@ -1,1 +1,1 @@
-export * from "./ImageContext/ImageContextProvider";
+export * from "./ImageContext/ImagesContextProvider";

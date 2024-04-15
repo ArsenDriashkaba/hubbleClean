@@ -1,9 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, FC } from "react";
 import { Camera, CroppArea, Modal } from "..";
 import { getCroppedImg } from "../../../utils";
-import { useImageContext } from "../../../context";
-import { routes } from "../../../router/routes";
-import { Link } from "react-router-dom";
+import { ImageContextType, ImageState } from "../../../context";
 
 const buttonStyles = "absolute bottom-5 left-1/2 transform -translate-x-1/2";
 
@@ -13,7 +11,15 @@ const videoConstraints = {
   facingMode: "user",
 };
 
-export const CameraCapture = () => {
+export type CameraCaptureProps = {
+  imageData: ImageState;
+  setImageData: ImageContextType["setImageData"];
+};
+
+export const CameraCapture: FC<CameraCaptureProps> = ({
+  imageData,
+  setImageData,
+}) => {
   const [screenshot, setScreenshot] = useState<string>();
   const [devices, setDevices] = useState<any>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,8 +27,6 @@ export const CameraCapture = () => {
   const [croppedImage, setCroppedImage] = useState<string | undefined>(
     undefined
   );
-
-  const { imageData, setImageData } = useImageContext();
 
   const handleDevices = useCallback(
     (mediaDevices: any) =>
@@ -49,13 +53,15 @@ export const CameraCapture = () => {
     const croppedImage = await getCroppedImg(screenshot, croppedAreaPixels);
 
     setCroppedImage(croppedImage);
-    setImageData({ ...imageData, croppedImgSrc: croppedImage });
+    setImageData({
+      ...imageData,
+      croppedImgSrc: croppedImage,
+    });
     setIsOpen(false);
   };
 
   return (
     <>
-      <Link to={routes.questions()}>Analyze</Link>
       <div className="flex items-center justify-center flex-col">
         {devices.map((_: any, index: number) => (
           <div key={index}>
@@ -77,7 +83,10 @@ export const CameraCapture = () => {
                         const screenshot = getScreenshot();
 
                         setScreenshot(screenshot);
-                        setImageData({ ...imageData, imageSrc: screenshot });
+                        setImageData({
+                          ...imageData,
+                          imageSrc: screenshot,
+                        });
                       }}
                     >
                       Capture

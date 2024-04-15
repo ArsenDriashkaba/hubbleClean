@@ -1,11 +1,11 @@
 import "./App.css";
-import { ImageContextProvider } from "./context";
+import { ImagesContextProvider } from "./context";
 import { Router } from "./router/Router";
 
 export default function App() {
   return (
-    <ImageContextProvider>
+    <ImagesContextProvider>
       <Router />
-    </ImageContextProvider>
+    </ImagesContextProvider>
   );
 }
