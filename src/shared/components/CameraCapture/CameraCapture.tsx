@@ -8,50 +8,50 @@ import {
 } from "react";
 import { Camera, CroppArea, Modal } from "..";
 import { getCroppedImg } from "../../../utils";
-import { ImageContextType, ImageState } from "../../../context";
+import { WebcamProps } from "react-webcam";
+import { videoConstraints } from "./constants";
+import { Area } from "react-easy-crop";
+import {
+  ImageContextType,
+  ImageState,
+} from "../../../context/ImageContext/types";
+import { Button, Image } from "../../elements";
 
-const buttonStyles = "absolute bottom-5 left-1/2 transform -translate-x-1/2";
+const buttonStyles =
+  "absolute bottom-5 left-1/2 transform -translate-x-1/2 flex";
 
-export const videoConstraints = {
-  width: 800,
-  height: 450,
-  facingMode: "user",
-};
+type SetImageState = Dispatch<SetStateAction<string | undefined>>;
 
 export type CameraCaptureProps = {
   screenshot?: string;
-  setScreenshot: Dispatch<SetStateAction<string | undefined>>;
+  setScreenshot: SetImageState;
   imageData: ImageState;
   setImageData: ImageContextType["setImageData"];
-  setCroppedImage: Dispatch<SetStateAction<string | undefined>>;
   className?: string;
 };
 
 export const CameraCapture: FC<CameraCaptureProps> = ({
   imageData,
   setImageData,
-  setCroppedImage,
   screenshot,
   setScreenshot,
   className,
 }) => {
-  const [devices, setDevices] = useState<any>([]);
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(undefined);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
 
-  const handleDevices = useCallback(
-    (mediaDevices: any) =>
-      setDevices(
-        mediaDevices.filter(({ kind }: { kind: any }) => kind === "videoinput")
-      ),
+  const handleVideoDevices = useCallback(
+    (mediaDevices: MediaDeviceInfo[]) =>
+      setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
     [setDevices]
   );
 
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(handleDevices);
-  }, [handleDevices]);
+    navigator.mediaDevices.enumerateDevices().then(handleVideoDevices);
+  }, [handleVideoDevices]);
 
-  const handleOnCropComplete = (_: any, croppedAreaPixels: any) => {
+  const handleOnCropComplete = (_: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
@@ -62,7 +62,6 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
 
     const croppedImage = await getCroppedImg(screenshot, croppedAreaPixels);
 
-    setCroppedImage(croppedImage);
     setImageData({
       ...imageData,
       croppedImgSrc: croppedImage,
@@ -73,7 +72,7 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
   return (
     <>
       <div className={className}>
-        {devices.map((_: any, index: number) => (
+        {devices.map((_: MediaDeviceInfo, index: number) => (
           <div key={index}>
             <div
               className={`relative w-[${videoConstraints.width}px] h-[${videoConstraints.height}px] bg-slate-200`}
@@ -86,34 +85,45 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
                   videoConstraints={videoConstraints}
                   hidden={!devices.length}
                 >
-                  {({ getScreenshot }) => (
-                    <button
-                      className={buttonStyles}
-                      onClick={() => {
-                        const screenshot = getScreenshot();
+                  {
+                    (({ getScreenshot }) => (
+                      <Button
+                        className={buttonStyles}
+                        onClick={() => {
+                          const screenshot = getScreenshot() ?? undefined;
 
-                        setScreenshot(screenshot);
-                        setImageData({
-                          ...imageData,
-                          imageSrc: screenshot,
-                        });
-                      }}
-                    >
-                      Capture
-                    </button>
-                  )}
+                          setScreenshot(screenshot);
+                          setImageData({
+                            ...imageData,
+                            imageSrc: screenshot,
+                          });
+                        }}
+                        variant="secondary"
+                      >
+                        Capture
+                      </Button>
+                    )) as WebcamProps["children"]
+                  }
                 </Camera>
               ) : (
                 <div className="border-yellow-400 border-4">
-                  <img src={screenshot} />
+                  <Image src={screenshot} />
                   <div className={buttonStyles}>
-                    <button
+                    <Button
                       className="mr-2"
+                      size="sm"
+                      variant="secondary"
                       onClick={() => setScreenshot(undefined)}
                     >
                       Retake
-                    </button>
-                    <button onClick={() => setIsOpen(true)}>Crop</button>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setIsOpen(true)}
+                    >
+                      Crop
+                    </Button>
                   </div>
                 </div>
               )}

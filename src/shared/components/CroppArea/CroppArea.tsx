@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, FC } from "react";
-import Cropper from "react-easy-crop";
+import Cropper, { Area, Point } from "react-easy-crop";
 
 export type CroppAreaProps = {
   imageUrl?: string;
-  onCroppComplete: (croppedArea: any, croppedAreaPixels: any) => any;
+  onCroppComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
 };
 
 export const CroppArea: FC<CroppAreaProps> = ({
   imageUrl,
   onCroppComplete,
 }) => {
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
 
   return (

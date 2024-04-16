@@ -1,4 +1,6 @@
-export const createImage = async (url: any): Promise<HTMLImageElement> =>
+import { Area } from "react-easy-crop";
+
+export const createImage = async (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image();
 
@@ -9,8 +11,8 @@ export const createImage = async (url: any): Promise<HTMLImageElement> =>
   });
 
 export const getCroppedImg = async (
-  imageSrc: any,
-  pixelCrop: any
+  imageSrc: string,
+  pixelCrop: Area
 ): Promise<string | undefined> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");

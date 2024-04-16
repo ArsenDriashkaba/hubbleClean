@@ -1,21 +1,9 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
-
-export type ImageState = {
-  imageSrc?: string;
-  croppedImgSrc?: string;
-  type: ImageType;
-  name: ImageName;
-};
-
-const ImageTypes = {
-  front: "Front",
-  left_side: "Left side",
-  right_side: "Right side",
-  back: "Back",
-} as const;
+import { ImageTypes } from "./constants";
+import { ImagesState, ImageType, ImageContextType, ImageState } from "./types";
 
 const initialImageState = Object.keys(ImageTypes).reduce(
-  (acc: ImagesState, key: any): ImagesState => {
+  (acc: ImagesState, key: string): ImagesState => {
     const currImg = {
       [key]: {
         type: key,
@@ -27,16 +15,6 @@ const initialImageState = Object.keys(ImageTypes).reduce(
   },
   {} as ImagesState
 );
-export type ImageType = keyof typeof ImageTypes;
-
-export type ImageName = (typeof ImageTypes)[ImageType];
-
-export type ImagesState = { [K in ImageType]: ImageState };
-
-export type ImageContextType = {
-  imagesState: ImagesState;
-  setImageData: (value: ImageState) => void;
-};
 
 const ImagesContext = createContext<ImageContextType>({} as ImageContextType);
 
@@ -58,4 +36,5 @@ export const ImagesContextProvider: FC<Props> = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useImagesContext = () => useContext(ImagesContext);

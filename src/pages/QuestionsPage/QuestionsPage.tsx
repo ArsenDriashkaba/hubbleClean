@@ -1,5 +1,7 @@
 import { FC } from "react";
-import { ImageState, useImagesContext } from "../../context";
+import { useImagesContext } from "../../context";
+import { ImageState } from "../../context/ImageContext/types";
+import { Image } from "../../shared/elements";
 
 export const QuestionsPage: FC = () => {
   const { imagesState } = useImagesContext();
@@ -12,9 +14,9 @@ export const QuestionsPage: FC = () => {
           imageSrc && croppedImgSrc ? (
             <>
               <h3>Original image</h3>
-              <img src={imageSrc} />
+              <Image src={imageSrc} />
               <h3>Cropped image</h3>
-              <img className="w-[800px]" src={croppedImgSrc} />
+              <Image className="w-[800px]" src={croppedImgSrc} />
             </>
           ) : null
       )}
