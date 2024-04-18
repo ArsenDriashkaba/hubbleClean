@@ -27,47 +27,54 @@ export const CapturePage: FC = () => {
 
       <div className="mt-10">
         <div className="flex relative">
-          <CameraCapture
-            screenshot={screenshot}
-            setScreenshot={setScreenshot}
-            imageData={imagesState[selectedTab]}
-            setImageData={setImageData}
-            className="mr-4"
-          />
-          <Tab.Group
-            defaultIndex={0}
-            onChange={(index) => {
-              setSelectedTab(images[index].type);
-              setScreenshot(undefined);
-            }}
-          >
-            <div className="flex flex-col">
-              <Tab.List className="flex">
-                {images.map((image) => (
-                  <Tab key={image.type} as={Fragment}>
-                    {({ selected }) => (
-                      <Button
-                        className={classnames(selected && "underline")}
-                        variant="ghost"
-                      >
-                        {image.name}
-                      </Button>
-                    )}
-                  </Tab>
-                ))}
-              </Tab.List>
-              <Tab.Panels className="mt-auto">
-                {images.map((image, index) => (
-                  <Tab.Panel key={`${image.type}${index}`}>
-                    <Image
-                      src={imagesState[image.type]?.croppedImgSrc}
-                      className={`w-[${videoConstraints.width}px] h-[${videoConstraints.height}px]`}
-                    />
-                  </Tab.Panel>
-                ))}
-              </Tab.Panels>
-            </div>
-          </Tab.Group>
+          <div className="mt-auto flex-1">
+            <CameraCapture
+              screenshot={screenshot}
+              setScreenshot={setScreenshot}
+              imageData={imagesState[selectedTab]}
+              setImageData={setImageData}
+              className="mr-4"
+            />
+          </div>
+          <div className="flex-1">
+            <Tab.Group
+              defaultIndex={0}
+              onChange={(index) => {
+                setSelectedTab(images[index].type);
+                setScreenshot(undefined);
+              }}
+            >
+              <div className="flex flex-col">
+                <Tab.List className="flex">
+                  {images.map((image) => (
+                    <Tab key={image.type} as={Fragment}>
+                      {({ selected }) => (
+                        <Button
+                          className={classnames(selected && "underline")}
+                          variant="ghost"
+                        >
+                          {image.name}
+                        </Button>
+                      )}
+                    </Tab>
+                  ))}
+                </Tab.List>
+                <Tab.Panels className="mt-auto">
+                  {images.map((image, index) => (
+                    <Tab.Panel
+                      key={`${image.type}${index}`}
+                      className={`h-[${videoConstraints.height}px]`}
+                    >
+                      <Image
+                        src={imagesState[image.type]?.croppedImgSrc}
+                        className={`w-[${videoConstraints.width}px] aspect-auto`}
+                      />
+                    </Tab.Panel>
+                  ))}
+                </Tab.Panels>
+              </div>
+            </Tab.Group>
+          </div>
         </div>
       </div>
     </div>
