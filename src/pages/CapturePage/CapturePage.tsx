@@ -1,5 +1,5 @@
 import { FC, useMemo, useState, Fragment } from "react";
-import { CameraCapture } from "../../shared/components";
+import { CameraCapture, Page } from "../../shared/components";
 import { Tab } from "@headlessui/react";
 import { useImagesContext } from "../../context";
 import { routes } from "../../router/routes";
@@ -20,7 +20,7 @@ export const CapturePage: FC = () => {
   );
 
   return (
-    <div className="py-10 px-5">
+    <Page backButton title={<h1>This is Capture page</h1>}>
       <Button>
         <NavLink to={routes.questions()}>Analyze</NavLink>
       </Button>
@@ -77,6 +77,6 @@ export const CapturePage: FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Page>
   );
 };

@@ -16,6 +16,7 @@ import {
   ImageState,
 } from "../../../context/ImageContext/types";
 import { Button, Image } from "../../elements";
+import { useScreenSize } from "../../../hooks";
 
 const buttonStyles =
   "absolute bottom-5 left-1/2 transform -translate-x-1/2 flex";
@@ -40,6 +41,7 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
+  const screenSize = useScreenSize();
 
   const handleVideoDevices = useCallback(
     (mediaDevices: MediaDeviceInfo[]) =>
@@ -79,10 +81,13 @@ export const CameraCapture: FC<CameraCaptureProps> = ({
             >
               {!screenshot ? (
                 <Camera
-                  height={videoConstraints.height}
+                  height={screenSize.height}
                   screenshotFormat="image/jpeg"
-                  width={videoConstraints.width}
-                  videoConstraints={videoConstraints}
+                  width={screenSize.width}
+                  videoConstraints={{
+                    width: screenSize.width,
+                    height: screenSize.height,
+                  }}
                   hidden={!devices.length}
                 >
                   {

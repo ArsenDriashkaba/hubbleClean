@@ -2,6 +2,7 @@ import { FC, useMemo } from "react";
 import { useImagesContext } from "../../context";
 import { SlideImage } from "yet-another-react-lightbox";
 import { Gallery } from "../../shared/components/Gallery/Gallery";
+import { Page } from "../../shared/components";
 
 export const QuestionsPage: FC = () => {
   const { imagesState } = useImagesContext();
@@ -19,9 +20,10 @@ export const QuestionsPage: FC = () => {
   );
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>This is a Questions page</h1>
-      <Gallery slides={slides} />
-    </div>
+    <Page backButton title={<h1>This is a Questions page</h1>}>
+      <div className="flex flex-col justify-center items-center">
+        <Gallery slides={slides} />
+      </div>
+    </Page>
   );
 };
